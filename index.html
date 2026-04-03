@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -142,6 +142,11 @@
     border-radius: 6px;
     background: var(--tag-bg);
     color: var(--lime);
+  }
+
+  [data-theme="light"] .tag {
+    color: #3d6b00;
+    background: rgba(100,160,0,0.14);
   }
 
   .tag--coral {
@@ -779,7 +784,18 @@
     const html = document.documentElement;
 
     const saved = localStorage.getItem('hh-theme');
-    if (saved) html.setAttribute('data-theme', saved);
+    if (saved) {
+      html.setAttribute('data-theme', saved);
+    } else {
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      html.setAttribute('data-theme', systemDark ? 'dark' : 'light');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('hh-theme')) {
+        html.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        updateToggleIcon();
+      }
+    });
     updateToggleIcon();
 
     toggle.addEventListener('click', () => {
